@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 django = "*"
+"autopep8" = "*"
+pylint = "*"
+"flake8" = "*"
 
 [dev-packages]
 
