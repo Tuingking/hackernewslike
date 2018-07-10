@@ -1,5 +1,10 @@
+from urllib.parse import urlparse
+from datetime import datetime, timedelta
+
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
+from django.template.defaultfilters import pluralize
 
 
 class Post(models.Model):
@@ -17,6 +22,26 @@ class Post(models.Model):
     url = models.URLField()
     upvotes = models.ManyToManyField(User, through='Upvote')
     title = models.CharField(max_length=256)
+
+    def how_long_ago(self):
+        how_long = timezone.now() - self.creation_date
+        if how_long < timedelta(minutes=1):
+            return f'{how_long.seconds} second{pluralize(how_long.seconds)} ago'
+        elif how_long < timedelta(hours=1):
+            minutes = int(how_long.total_seconds()) // 60
+            return f'{minutes} minute{pluralize(minutes)} ago'
+        elif how_long < timedelta(days=1):
+            hours = int(how_long.total_seconds()) // 3600
+            return f'{hours} hour{pluralize(hours)} ago'
+        else:
+            return f'{how_long.days} day{pluralize(how_long.days)} ago'
+
+    def get_domain_name(self):
+        name = urlparse(self.url).hostname
+        if name.startswith('www.'):
+            return name[len('www.'):]
+        else:
+            return name
 
 
 class Upvote(models.Model):

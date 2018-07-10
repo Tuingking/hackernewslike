@@ -8,6 +8,7 @@ django = "*"
 "autopep8" = "*"
 pylint = "*"
 "flake8" = "*"
+ipython = "*"
 
 [dev-packages]
 
